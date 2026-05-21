@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 24" fill="none" aria-hidden="true">
+  <g stroke="currentColor" stroke-linecap="round" fill="none">
+    <!-- water ripples -->
+    <path d="M2 16 L 58 16" stroke-width="0.6" opacity="0.4"/>
+    <path d="M8 18 L 22 18" stroke-width="0.5" opacity="0.3"/>
+    <path d="M40 18 L 54 18" stroke-width="0.5" opacity="0.3"/>
+    <!-- boat hull -->
+    <path d="M22 15 Q 30 17 38 15 L 36 16 Q 30 16.6 24 16 Z"
+          stroke-width="0.8" fill="currentColor" opacity="0.85"/>
+    <!-- person silhouette -->
+    <path d="M30 14 L 30 10" stroke-width="1.2"/>
+    <circle cx="30" cy="9" r="1" fill="currentColor"/>
+    <!-- oar -->
+    <path d="M28 12 L 22 11" stroke-width="0.6" opacity="0.7"/>
+    <path d="M32 12 L 38 11" stroke-width="0.6" opacity="0.7"/>
+  </g>
+</svg>

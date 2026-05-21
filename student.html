@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NTU Journalism · 同學版 — 114 學年度畢業典禮邀請函</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animation.css" />
+</head>
+<body data-role="student">
+
+  <div class="scene">
+
+    <a class="back-link" href="index.html">← BACK</a>
+    <span class="role-badge">For Graduates</span>
+
+    <!-- THE CARD (contains ALL invitation content) -->
+    <article class="card">
+
+      <h1 class="card-title deboss">
+        <span class="line1">NTU</span>
+        <span class="line2">Journalism</span>
+      </h1>
+
+      <p class="card-subtitle deboss-ink">
+        <span class="lead">VOL. 33 · FINAL EDITION</span>
+      </p>
+
+      <span class="corner tl deboss-ink">DATELINE<br>06.06</span>
+      <span class="corner tr deboss-ink">TAIPEI<br>TAIWAN</span>
+
+      <div class="card-decoration">
+        <img src="assets/ntu-emblem.jpg" alt="國立臺灣大學 校徽" />
+      </div>
+
+      <div class="card-tagline deboss-ink">
+        <div>ALL THE STORIES WE LIVED —</div>
+        <div>STAY BEYOND THE PRESS.</div>
+      </div>
+
+      <div class="card-divider"></div>
+
+      <div class="card-invitation">
+        <div class="line">國立臺灣大學新聞研究所</div>
+        <div class="line">114 學年度畢業典禮</div>
+        <div class="line">2026.06.06（六）13:00 — 17:00</div>
+        <div class="line">臺大新聞研究所　攝影棚</div>
+        <div class="salutation">致　即將揚帆的你</div>
+      </div>
+
+      <span class="card-footer deboss-ink">
+        <span class="year">2026</span>
+        INVITATION
+      </span>
+    </article>
+
+    <!-- envelope parts as scene siblings:
+         back (z1) → flap (z2) → card (z3, declared above) → right/left (z4) -->
+    <div class="envelope-back"></div>
+    <div class="envelope-flap"></div>
+    <span class="flap-cursive">
+      <span>NTU</span>
+      <span>Journalism</span>
+    </span>
+    <div class="envelope-right"></div>
+    <div class="envelope-left"></div>
+
+    <button class="replay-btn" type="button" aria-label="再播一次">↻</button>
+
+  </div>
+
+  <script src="js/invitation.js"></script>
+</body>
+</html>

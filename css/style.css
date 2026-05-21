@@ -1,0 +1,719 @@
+/* ============================================================
+   台大新聞研究所 114 學年度畢業典禮邀請函
+   Portrait phone canvas → flat horizontal envelope at bottom
+   → tall portrait card emerging upward, ALL text on card
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Allura&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Noto+Serif+TC:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+/* ---------- Brand palette (unified for all roles) ----------
+   Main visual (小畢典主視覺): 3 brand colors —
+     #f6bfac  杏桃粉   — envelope
+     #f9f2d6  香檳米   — scene background (warm, light)
+     #92d9e1  湖水藍   — main accent (cursive title, palm silhouette)
+   Supporting:
+     #fdfaeb  ivory     — paper inside envelope (slightly lighter than scene)
+     #e09c83  deep peach — envelope shadows
+     #4a9ba5  deep teal  — accent-deep
+     #1f4d56  dark teal  — body text (deeper lake blue for readability)
+*/
+:root {
+  /* warm cream scene background */
+  --scene-bg: #f9f2d6;
+  --scene-bg-deep: #f1e7c0;
+  --scene-bg-light: #fcf6e1;
+
+  --envelope-paper: #f6bfac;
+  --envelope-paper-deep: #e09c83;
+
+  /* paper inside envelope — slightly lighter ivory so it pops against scene cream */
+  --card-paper: #fdfaeb;
+  --card-paper-edge: rgba(140, 110, 40, 0.14);
+
+  --accent: #92d9e1;            /* 湖水藍 — cursive title, palm tree */
+  --accent-deep: #4a9ba5;
+  --ink: #1f4d56;               /* dark teal — body text */
+}
+
+/* Each role uses ONE of the three brand colors. Paper accents match envelope. */
+
+/* 老師版 — 杏桃粉 #f6bfac */
+body[data-role="teacher"] {
+  --scene-bg: #fcf3e6;        /* very light peach tint */
+  --scene-bg-deep: #f6e2d0;
+  --scene-bg-light: #fef8ed;
+  --envelope-paper: #f6bfac;
+  --envelope-paper-deep: #d49377;
+  --card-paper: #fdfaeb;
+  --accent: #f6bfac;           /* cursive title, palm decoration (peach) */
+  --accent-deep: #d49377;      /* divider, deeper details */
+  --ink: #8a4733;              /* dark peach for body text */
+}
+
+/* 同學版 — 湖水藍 #92d9e1 */
+body[data-role="student"] {
+  --scene-bg: #ecf6f8;        /* very light blue tint */
+  --scene-bg-deep: #d8eaee;
+  --scene-bg-light: #f4fafb;
+  --envelope-paper: #92d9e1;
+  --envelope-paper-deep: #5fbac6;
+  --card-paper: #fdfaeb;
+  --accent: #92d9e1;           /* cursive title (lake blue) */
+  --accent-deep: #4a9ba5;
+  --ink: #1f4d56;
+}
+
+/* 家長版 — 香檳米 #f9f2d6 */
+body[data-role="parent"] {
+  --scene-bg: #ede0c0;        /* deeper cream so brand cream envelope is visible */
+  --scene-bg-deep: #e1d2a8;
+  --scene-bg-light: #f3e9c8;
+  --envelope-paper: #f9f2d6;
+  --envelope-paper-deep: #d4b576;
+  --card-paper: #fdfaeb;
+  --accent: #b8975e;           /* gold (deeper champagne) — cursive on ivory paper */
+  --accent-deep: #8a6e3a;
+  --ink: #5a4419;              /* coffee brown for body text */
+}
+
+/* ---------- Reset & base ---------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: "Noto Serif TC", "Songti TC", "PingFang TC", serif;
+  color: var(--accent);
+  -webkit-font-smoothing: antialiased;
+  background: #0d0d0d;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cursive { font-family: "Allura", cursive; font-weight: 400; }
+.serif-en { font-family: "Cormorant Garamond", serif; }
+.sans-en  { font-family: "Inter", "Helvetica Neue", sans-serif; }
+
+/* ============================================================
+   Phone canvas
+   ============================================================ */
+.scene {
+  /* envelope + card dimensions (used in calcs below) */
+  --env-w: min(62vw, 280px);
+  --env-h: calc(var(--env-w) * 14 / 9);
+  --card-w: min(54vw, 240px);
+
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  height: 100vh;
+  max-height: min(100vh, calc(460px * 19.5 / 9));
+  margin: 0 auto;
+  overflow: hidden;
+  isolation: isolate;
+  perspective: 1600px;
+  perspective-origin: 50% 30%;
+  /* soft warm cream gradient (no horizon line on light background) */
+  background:
+    linear-gradient(180deg,
+      var(--scene-bg-light) 0%,
+      var(--scene-bg) 60%,
+      var(--scene-bg-deep) 100%);
+  box-shadow:
+    0 0 80px rgba(160, 130, 80, 0.25),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+@media (min-width: 461px) {
+  .scene {
+    border-radius: 28px;
+    margin: clamp(12px, 2vh, 32px) auto;
+    height: calc(100vh - clamp(24px, 4vh, 64px));
+    max-height: calc(460px * 19.5 / 9);
+  }
+}
+
+/* subtle paper grain (light, since scene is now cream) */
+.scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.6  0 0 0 0 0.45  0 0 0 0 0.2  0 0 0 0.08 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  z-index: 11;
+}
+
+/* ============================================================
+   Envelope — flat siblings of .card in .scene
+   Z-stacking (so card slides "between" flap and sides like real letter):
+     envelope-back  z 1   (back wall, behind everything)
+     envelope-flap  z 2   (BELOW card — card slides over flap)
+     card           z 3   (between flap and sides)
+     envelope-right z 4   (in front of card — covers card lower portion)
+     envelope-left  z 4   (in front of card)
+   ============================================================ */
+/* PORTRAIT envelope — taller than wide
+   Aspect 9/14 (~0.64). Flap covers top 30% of envelope.
+   V apex (deepest point of V notch) at envelope (50%, 30%).
+   Left/right are quadrilaterals (not pure triangles) since V apex
+   isn't at envelope center. */
+.envelope-back,
+.envelope-flap,
+.envelope-right,
+.envelope-left {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--env-w);
+  aspect-ratio: 9 / 14;
+  transform: translate(-50%, -50%);
+  /* unified origin for ALL parts so they translate+scale together as one */
+  transform-origin: top center;
+  transition:
+    transform 1.4s cubic-bezier(0.55, 0.05, 0.55, 1),
+    opacity 1.2s ease;
+}
+
+.envelope-back {
+  background: linear-gradient(180deg,
+    var(--envelope-paper) 0%,
+    var(--envelope-paper-deep) 100%);
+  border-radius: 6px;
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.35);
+  z-index: 1;
+}
+
+/* top flap — covers top 30% of envelope (triangular) */
+.envelope-flap {
+  z-index: 2;
+  pointer-events: none;
+  /* transform-origin inherited from base rule: top center */
+  transform: translate(-50%, -50%) rotateX(0deg);
+  transition:
+    transform 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.6s,
+    opacity 1.2s ease;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+}
+.envelope-flap::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: linear-gradient(165deg,
+    var(--envelope-paper) 0%,
+    var(--envelope-paper-deep) 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  border-radius: 0 0 6px 6px;
+}
+
+/* cursive text on flap (visible when closed) — positioned in top 30% */
+.flap-cursive {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--env-w);
+  aspect-ratio: 9 / 14;
+  pointer-events: none;
+  z-index: 2;
+  transform-origin: top center;
+  transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.6s, opacity 0.3s ease 0.6s;
+}
+.flap-cursive span {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Allura", cursive;
+  font-size: clamp(15px, 4vw, 24px);
+  color: var(--accent);
+  line-height: 0.95;
+  text-align: center;
+  white-space: nowrap;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55),
+    0 -1px 1px rgba(0, 0, 0, 0.25);
+  letter-spacing: 0.01em;
+}
+/* cursive spans positioned within the flap area (top 30% of envelope) */
+.flap-cursive span:first-child { top: 6%; }
+.flap-cursive span:last-child { top: 14%; padding-left: 1em; }
+
+/* left and right body halves — quadrilaterals with V slope at top.
+   V apex at envelope (50%, 30%). Outer top corners at (0,0) and (100%,0).
+   Bottom corners at (0,100) and (100,100). Inner seam at center (50%, 30→100%). */
+.envelope-left,
+.envelope-right {
+  z-index: 4;
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.3));
+  pointer-events: none;
+}
+.envelope-left::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--envelope-paper-deep);
+  clip-path: polygon(0 0, 50% 30%, 50% 100%, 0 100%);
+  border-radius: 0 0 0 10px;
+}
+.envelope-right::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--envelope-paper);
+  clip-path: polygon(100% 0, 50% 30%, 50% 100%, 100% 100%);
+  border-radius: 0 0 10px 0;
+}
+
+.flap-cursive {
+  font-family: "Allura", cursive;
+  font-size: clamp(20px, 5.4vw, 36px);
+  color: var(--accent);
+  line-height: 0.95;
+  text-align: center;
+  text-shadow:
+    0 1px 0 rgba(255,255,255,0.55),
+    0 -1px 1px rgba(0,0,0,0.25);
+  letter-spacing: 0.01em;
+  pointer-events: none;
+}
+.flap-cursive span { display: block; }
+.flap-cursive span:last-child { padding-left: 1em; }
+
+/* ============================================================
+   THE CARD — narrower than envelope, anchored at envelope bottom.
+   Grows in height: envelope-height → tall letter → fullscreen.
+   Always behind envelope sides (z3 < z4) so width is visually capped.
+   ============================================================ */
+.card {
+  position: absolute;
+  left: 50%;
+  /* bottom anchored at envelope bottom edge (envelope center − env_h/2) */
+  bottom: calc(50% - var(--env-h) / 2);
+  width: var(--card-w);
+  /* initial height = lower 70% of envelope (below V apex at envelope-y 30%).
+     Paper is entirely covered by left/right side quadrilaterals. */
+  height: calc(var(--env-h) * 0.7);
+  transform: translateX(-50%);
+  z-index: 3;
+  padding: 0 6%;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: var(--card-paper);
+  background-image:
+    radial-gradient(ellipse at 30% 15%, rgba(255,255,255,0.35), transparent 60%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='s'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.6  0 0 0 0 0.5  0 0 0 0 0.2  0 0 0 0.12 0'/></filter><rect width='100%25' height='100%25' filter='url(%23s)'/></svg>");
+  box-shadow:
+    inset 0 0 0 1px rgba(140,110,40,0.10),
+    inset 0 0 60px var(--card-paper-edge);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition:
+    bottom 1.4s cubic-bezier(0.65, 0, 0.35, 1),
+    height 1.6s ease,
+    width 1.4s ease,
+    max-width 0s linear,
+    padding 1.2s ease,
+    border-radius 1.2s ease;
+}
+
+/* Phase B — paper extends taller (height grows, bottom stays anchored).
+   Starts at t=1.8s (after flap rotation done, while envelope is sinking) */
+body.playing .card {
+  height: 65%;
+  padding: 6% 6%;
+  transition: height 1.8s cubic-bezier(0.22, 0.61, 0.36, 1) 1.8s,
+    padding 1.2s ease 1.8s;
+}
+
+/* Phase C — paper fills entire scene (envelope already left) */
+body.opening .card {
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  padding: 14% 9% 8%;
+  border-radius: 0;
+  transition:
+    bottom 1.4s cubic-bezier(0.22, 0.61, 0.36, 1),
+    height 1.4s cubic-bezier(0.22, 0.61, 0.36, 1),
+    width 1.4s ease,
+    padding 1.4s ease,
+    border-radius 1.4s ease;
+}
+
+/* debossed text effect */
+.deboss {
+  color: var(--accent);
+  text-shadow:
+    0 1px 0 rgba(255,255,255,0.55),
+    0 -1px 1px rgba(60,80,20,0.35);
+}
+/* body-text deboss: darker forest green for readability */
+.deboss-ink {
+  color: var(--ink);
+  text-shadow:
+    0 1px 0 rgba(255,255,255,0.55),
+    0 -1px 1px rgba(40,60,15,0.30);
+}
+
+/* ---------- CARD: title ---------- */
+.card-title {
+  font-family: "Allura", cursive;
+  font-size: clamp(28px, 7.8vw, 50px);
+  line-height: 0.92;
+  letter-spacing: 0.005em;
+  margin-bottom: 0.4em;
+}
+.card-title .line2 {
+  display: block;
+  padding-left: 0.7em;
+  margin-top: -0.1em;
+}
+
+.card-subtitle {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: clamp(9px, 2.2vw, 11px);
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  opacity: 0.92;
+  margin-bottom: clamp(8px, 2.2vh, 14px);
+}
+.card-subtitle .lead {
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: 0.06em;
+}
+
+/* ---------- CARD: corner labels (positioned absolutely) ---------- */
+.corner {
+  position: absolute;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: clamp(7px, 1.7vw, 9px);
+  letter-spacing: 0.22em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+.corner.tl {
+  left: 5%;
+  top: 36%;
+  text-align: left;
+}
+.corner.tr {
+  right: 5%;
+  top: 36%;
+  text-align: right;
+}
+
+/* ---------- CARD: palm tree decoration ---------- */
+.card-decoration {
+  width: clamp(110px, 36%, 170px);
+  margin: clamp(2px, 1vh, 6px) auto clamp(4px, 1.5vh, 10px);
+  color: var(--accent);
+  filter:
+    drop-shadow(0.5px 0.5px 0 rgba(0,0,0,0.18))
+    drop-shadow(-0.5px -0.5px 0 rgba(255,255,255,0.55));
+}
+.card-decoration svg,
+.card-decoration img { width: 100%; height: auto; display: block; }
+
+/* ---------- CARD: English tagline ---------- */
+.card-tagline {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: clamp(8px, 1.95vw, 10px);
+  letter-spacing: 0.28em;
+  line-height: 1.7;
+  text-transform: uppercase;
+  margin-bottom: clamp(6px, 1.4vh, 10px);
+}
+.card-tagline div + div { margin-top: 1px; }
+
+/* ---------- CARD: divider ---------- */
+.card-divider {
+  width: 50%;
+  border-top: 1px solid var(--accent);
+  opacity: 0.45;
+  margin: clamp(4px, 1vh, 8px) auto clamp(6px, 1.5vh, 12px);
+}
+
+/* ---------- CARD: Chinese invitation lines ---------- */
+.card-invitation {
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(10px, 2.4vw, 12.5px);
+  letter-spacing: 0.16em;
+  line-height: 1.85;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--ink);
+}
+.card-invitation div { white-space: nowrap; }
+.card-invitation .salutation {
+  margin-top: clamp(6px, 1.6vh, 14px);
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  padding-left: 0.28em;
+}
+.card-invitation .ph {
+  border-bottom: 1px dotted currentColor;
+  padding: 0 4px;
+  opacity: 0.7;
+}
+
+/* card content uses fullscreen-friendly type sizes from the start */
+.card-title       { font-size: clamp(44px, 11vw, 80px) !important; }
+.card-subtitle    { font-size: clamp(11px, 2.8vw, 14px) !important; }
+.card-decoration  { width: clamp(160px, 42%, 240px) !important; }
+.card-tagline     { font-size: clamp(10px, 2.4vw, 13px) !important; }
+.card-invitation  { font-size: clamp(12px, 3vw, 16px) !important; }
+.corner           { font-size: clamp(8px, 2vw, 11px) !important; }
+.card-footer      { font-size: clamp(10px, 2.2vw, 13px) !important; }
+.card-footer .year{ font-size: clamp(13px, 2.8vw, 17px) !important; }
+.card-divider     { width: 32% !important; }
+
+/* ---------- CARD: footer (2026 INVITATION bottom-right) ---------- */
+.card-footer {
+  position: absolute;
+  right: 7%;
+  bottom: 5%;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: clamp(8px, 1.7vw, 10px);
+  letter-spacing: 0.18em;
+  line-height: 1.3;
+  text-align: right;
+}
+.card-footer .year {
+  font-size: clamp(11px, 2.1vw, 13px);
+  letter-spacing: 0.12em;
+  display: block;
+}
+
+/* ============================================================
+   Header controls (BACK / role badge / REPLAY)
+   ============================================================ */
+.back-link {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  z-index: 20;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: 0.18em;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  text-transform: uppercase;
+}
+.back-link:hover { opacity: 1; }
+
+.role-badge {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  z-index: 20;
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: var(--ink);
+  opacity: 0.75;
+}
+
+.replay-btn {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  z-index: 20;
+  background: rgba(46, 74, 30, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--accent-deep);
+  color: var(--ink);
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s, background 0.2s, transform 0.2s;
+}
+.replay-btn.show { opacity: 1; pointer-events: auto; }
+.replay-btn:hover {
+  background: var(--accent);
+  color: var(--scene-bg);
+  transform: translateX(-50%) translateY(-2px);
+}
+
+/* ============================================================
+   LANDING PAGE (index.html)
+   ============================================================ */
+.landing {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6vh 4vw;
+  gap: 5vh;
+  position: relative;
+  background:
+    linear-gradient(180deg, #243747 0%, #2F4659 55%, #3A546A 100%);
+  background-attachment: fixed;
+}
+.landing::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.landing-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #EFE7D8;
+  position: relative;
+  z-index: 2;
+}
+.landing-header .cursive {
+  font-size: clamp(44px, 9vw, 80px);
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+.landing-header .cursive .line2 { display: block; padding-left: 1em; }
+.landing-header .serif-en {
+  font-style: italic;
+  font-size: clamp(11px, 2vw, 14px);
+  letter-spacing: 0.2em;
+  margin-top: 8px;
+  opacity: 0.78;
+}
+.landing-header .zh {
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(13px, 2.5vw, 16px);
+  letter-spacing: 0.5em;
+  padding-left: 0.5em;
+  margin-top: 12px;
+  opacity: 0.85;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(18px, 3vw, 36px);
+  width: 100%;
+  max-width: 1080px;
+  position: relative;
+  z-index: 2;
+}
+@media (max-width: 720px) {
+  .cards { grid-template-columns: 1fr; max-width: 360px; }
+}
+
+.role-card {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(28px, 4vw, 44px) clamp(20px, 3vw, 32px);
+  background-color: var(--card-paper);
+  background-image:
+    radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.30), transparent 55%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='s'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.45  0 0 0 0 0.35  0 0 0 0 0.22  0 0 0 0.16 0'/></filter><rect width='100%25' height='100%25' filter='url(%23s)'/></svg>");
+  border-radius: 4px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.4),
+    0 18px 36px rgba(0,0,0,0.32),
+    inset 0 0 0 1px rgba(0,0,0,0.08),
+    inset 0 0 60px rgba(80,55,30,0.18);
+  color: var(--accent);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  gap: 14px;
+  text-align: center;
+}
+.role-card:hover {
+  transform: translateY(-8px);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.4),
+    0 24px 48px rgba(0,0,0,0.42),
+    inset 0 0 0 1px rgba(0,0,0,0.08),
+    inset 0 0 60px rgba(80,55,30,0.22);
+}
+.role-card.teacher { --card-paper: #EFE7D8; --accent: #3D5A6E; }
+.role-card.student { --card-paper: #EFE9D9; --accent: #3F5D40; }
+.role-card.parent  { --card-paper: #E0CFB6; --accent: #9C5A3D; }
+
+.role-card .card-palm {
+  width: 90px;
+  color: var(--accent);
+  filter:
+    drop-shadow(0.5px 0.5px 0 rgba(0,0,0,0.18))
+    drop-shadow(-0.5px -0.5px 0 rgba(255,255,255,0.55));
+}
+.role-card .role-en {
+  font-family: "Allura", cursive;
+  font-size: clamp(28px, 4vw, 36px);
+  line-height: 1;
+  color: var(--accent);
+  text-shadow:
+    0 1px 0 rgba(255,255,255,0.55),
+    0 -1px 1px rgba(80,55,30,0.30);
+}
+.role-card .role-zh {
+  font-family: "Noto Serif TC", serif;
+  font-weight: 500;
+  font-size: clamp(18px, 3vw, 22px);
+  letter-spacing: 0.4em;
+  padding-left: 0.4em;
+  margin-top: -4px;
+}
+.role-card .role-cta {
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 3px;
+  margin-top: 8px;
+  opacity: 0.85;
+}
+
+/* ============================================================
+   Reduced motion — jump to final fullscreen card state
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .envelope { display: none !important; }
+  .card { opacity: 1 !important; transform: scale(1) !important; }
+  .card-title, .card-subtitle, .card-decoration, .card-tagline,
+  .card-divider, .card-invitation .line, .card-invitation .salutation,
+  .card-footer, .corner {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+  .replay-btn.show { display: none; }
+}

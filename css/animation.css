@@ -1,0 +1,101 @@
+/* ============================================================
+   Animation timeline:
+     0.0-0.6s   scene fade-in (envelope visible, centered, closed)
+     0.6-1.5s   flap rotates open (embedded inside envelope sink keyframes)
+     0.6-3.0s   envelope sinks down + scales up — all parts move TOGETHER
+                back + sides linearly translate/scale; flap also rotates 190°
+                within first 35% of the animation
+     1.4-3.0s   paper height grows from envelope-half to ~65% (extends out)
+     3.4-4.8s   paper fullscreens (bottom→0, w/h→100%)
+     5.0s+      content fades in line-by-line
+     6.5s+     replay button appears
+   ============================================================ */
+
+/* scene initial fade */
+.scene { opacity: 0; }
+@keyframes sceneFade { to { opacity: 1; } }
+body.playing .scene { animation: sceneFade 0.6s ease forwards; }
+
+/* ============================================================
+   ENVELOPE — flap rotates FIRST at center (visible), then whole
+   envelope sinks down + scales up as one connected piece.
+   Total animation duration 3.0s, delay 0.6s.
+   Timeline within animation:
+     0% — 30%   flap rotates 0°→190° (envelope holds at center)
+     30% — 100% envelope sinks down + scales up, flap stays rotated
+   ============================================================ */
+@keyframes envelopeSink {
+  0%   { transform: translate(-50%, -50%) scale(1); }
+  30%  { transform: translate(-50%, -50%) scale(1); }       /* hold at center */
+  100% { transform: translate(-50%, calc(-50% + 100vh)) scale(1.5); }
+}
+
+@keyframes flapSinkOpen {
+  0%   { transform: translate(-50%, -50%) rotateX(0deg) scale(1); }
+  30%  { transform: translate(-50%, -50%) rotateX(190deg) scale(1); }   /* flap fully open at center */
+  100% { transform: translate(-50%, calc(-50% + 100vh)) rotateX(190deg) scale(1.5); }
+}
+
+@keyframes envelopeFade {
+  to { opacity: 0; }
+}
+
+@keyframes cursiveOpenAndSink {
+  /* cursive fades during rotation, then rides down with envelope */
+  0%   { opacity: 1; transform: translate(-50%, -50%) rotateX(0); }
+  30%  { opacity: 0; transform: translate(-50%, -50%) rotateX(190deg); }
+  100% { opacity: 0; transform: translate(-50%, calc(-50% + 100vh)) rotateX(190deg) scale(1.5); }
+}
+
+body.playing .envelope-back,
+body.playing .envelope-right,
+body.playing .envelope-left {
+  animation:
+    envelopeSink 3.0s cubic-bezier(0.55, 0.05, 0.55, 1) 0.6s forwards,
+    envelopeFade 0.8s ease 3.0s forwards;
+}
+
+body.playing .envelope-flap {
+  animation:
+    flapSinkOpen 3.0s cubic-bezier(0.55, 0.05, 0.55, 1) 0.6s forwards,
+    envelopeFade 0.8s ease 3.0s forwards;
+}
+
+body.playing .flap-cursive {
+  animation:
+    cursiveOpenAndSink 3.0s cubic-bezier(0.55, 0.05, 0.55, 1) 0.6s forwards;
+}
+
+/* ============================================================
+   CARD content fade-in (after card is at fullscreen)
+   ============================================================ */
+.card-title,
+.card-subtitle,
+.card-decoration,
+.card-tagline,
+.card-divider,
+.card-invitation .line,
+.card-invitation .salutation,
+.card-footer,
+.corner {
+  opacity: 0;
+}
+
+@keyframes contentIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* content fades in after card has grown to fullscreen */
+body.opening .card-title       { animation: contentIn 0.7s ease 0.6s forwards; }
+body.opening .corner           { animation: contentIn 0.6s ease 0.9s forwards; }
+body.opening .card-subtitle    { animation: contentIn 0.6s ease 1.0s forwards; }
+body.opening .card-decoration  { animation: contentIn 0.7s ease 1.3s forwards; }
+body.opening .card-tagline     { animation: contentIn 0.6s ease 1.6s forwards; }
+body.opening .card-divider     { animation: contentIn 0.5s ease 1.8s forwards; }
+body.opening .card-invitation .line:nth-child(1) { animation: contentIn 0.5s ease 2.0s forwards; }
+body.opening .card-invitation .line:nth-child(2) { animation: contentIn 0.5s ease 2.25s forwards; }
+body.opening .card-invitation .line:nth-child(3) { animation: contentIn 0.5s ease 2.5s forwards; }
+body.opening .card-invitation .line:nth-child(4) { animation: contentIn 0.5s ease 2.75s forwards; }
+body.opening .card-invitation .salutation { animation: contentIn 0.6s ease 3.05s forwards; }
+body.opening .card-footer      { animation: contentIn 0.6s ease 3.3s forwards; }
