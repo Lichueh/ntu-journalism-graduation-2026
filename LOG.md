@@ -81,6 +81,67 @@ body[data-role="parent"]  { --accent: #C56B4F; --accent-soft: #D5876B; }
 
 ## 變更紀錄
 
+## 2026-05-22 11:00
+- 修改檔案：css/style.css
+- 修改內容：整體風格大改成 **Y2K / 1990-2000 像素風**
+  - **字體**：
+    - 英文標題：Allura cursive → **Press Start 2P**（8-bit 像素字體）
+    - 英文副標 / serif：Cormorant Garamond → **VT323**（復古終端機字體）
+    - 英文 caps：Inter → **Silkscreen**（像素字體）
+    - 中文：Noto Serif TC → **Zpix 最像素**（從 jsdelivr CDN 載入）
+  - `body` 加 `-webkit-font-smoothing: none` + `image-rendering: pixelated` 強制像素渲染
+  - **CRT 掃描線**：scene::before 加 1px 黑線 + 3px 間隔的 repeating-linear-gradient，模擬老映象管
+  - **校徽**圖片加 `image-rendering: pixelated`，縮小到 70% 強制 pixelation 顯現
+  - **HARD 像素 text-shadow**：去掉 blur，改成 1px offset 純色（無模糊）
+  - **去掉所有 border-radius**（場景畫布 28px 跟重播按鈕除外），銳利方角
+  - **box-shadow** 從 smooth blur → **pixel-step**（`3px 3px 0` 硬陰影）
+  - card 加 2px 像素邊框（inset shadow）
+  - card-title 字級從 80px 大降到 28px（Press Start 2P 比 Allura 厚很多）
+  - divider 改 dashed style 更像像素分隔
+
+## 2026-05-22 10:30
+- 修改檔案：css/style.css, css/animation.css, teacher.html, student.html, parent.html
+- 修改內容：信紙內容重組為**採訪通知（press notice）**排版，呼應新聞所主題：
+  - 移除舊的 `.card-invitation` 4-line 排版
+  - 加新類別 `.card-press`、`.press-section`、`.press-label`、`.press-body`、`.press-statement`、`.press-quote`、`.press-items`、`.press-item`
+  - card-tagline 從 `ALL THE STORIES WE LIVED — / STAY BEYOND THE PRESS.` 改成 **`採訪通知 · PRESS NOTICE`**
+  - 結構：時間 section → 地點 section（含中文地址 + 小註解）→ 角色主訊息 → 「懇請列入排程」引述（老師/家長版才有）→ ✶ 列點項目
+- 三角色內容差異：
+  - **老師版**：承蒙老師指導 + ✶ 致詞與撥穗（含 ＯＯＯ 三位畢業生 placeholder）+ ✶ 作品展覽
+  - **同學版**：致 即將揚帆的你 + ✶ 服裝（學位袍）+ ✶ 謝師宴 06.07 11:00
+  - **家長版**：敬邀參與 R13 發表會 + ✶ 作品展覽 + ✶ 入場密語
+- card 在 `body.opening` 加 `overflow-y: auto`（內容多時可滾動），webkit scrollbar 隱藏
+- 內文 fade-in 順序更新：press-section → statement → quote → items 逐項浮現
+- placeholder（指導老師名字 / 撥穗學生名字）用 .ph dotted underline 標記
+
+## 2026-05-21 19:40
+- 修改檔案：css/style.css
+- 修改內容：使用者反映紙張太黃，改白：
+  - `--card-paper`：`#fdfaeb`（米黃）→ **`#fdfdf6`**（接近白，極淡米色）
+  - `--paper-fiber` 噪點 colorMatrix：從棕黃（R 0.55, G 0.45, B 0.22）→ **中性灰**（R 0.42, G 0.40, B 0.36），opacity 0.22 → 0.14
+  - `--paper-grain` 同樣去掉棕色 → 中性灰，opacity 降至 0.06
+  - 整體紙張不再泛黃，視覺上更接近白色紙張
+
+## 2026-05-21 19:30
+- 修改檔案：css/style.css
+- 修改內容：嘗試把翻蓋放大到 50%、V 開口放到中央、信紙佔滿信封內部高度 + opacity 漸進顯示，使用者反映原本的好看，**已 revert 回前一版**：
+  - 翻蓋 30%
+  - V apex envelope-y 30%
+  - envelope-left/right clip 回 `50% 30%`
+  - 信紙初始高度 env_h × 0.7
+  - 信紙 opacity 移除（永遠 opacity 1）
+
+## 2026-05-21 19:00
+- 推上 GitHub + 開 GitHub Pages
+- repo：https://github.com/Lichueh/ntu-journalism-graduation-2026（public）
+- 初始 commit 包含所有檔案，加了基本 .gitignore（.DS_Store、log、IDE 設定）
+- GitHub Pages 設定 source = main 分支 / root path
+- 公開網址：
+  - 首頁：https://lichueh.github.io/ntu-journalism-graduation-2026/
+  - 老師版：https://lichueh.github.io/ntu-journalism-graduation-2026/teacher.html
+  - 同學版：https://lichueh.github.io/ntu-journalism-graduation-2026/student.html
+  - 家長版：https://lichueh.github.io/ntu-journalism-graduation-2026/parent.html
+
 ## 2026-05-21 18:45
 - 新增檔案：assets/ntu-emblem.jpg（從 Downloads 複製過來）
 - 修改檔案：css/style.css, teacher.html, student.html, parent.html
